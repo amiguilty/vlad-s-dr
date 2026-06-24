@@ -2,22 +2,35 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>С Днем Рождения</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#fff;overflow:hidden;touch-action:manipulation}
+body{font-family:Arial,sans-serif;background:#fff;overflow:hidden;touch-action:manipulation;height:100dvh}
 
-.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;padding:15px}
+.screen{
+position:fixed;
+left:0;
+top:0;
+width:100vw;
+height:100dvh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:15px;
+padding-top:calc(15px + env(safe-area-inset-top))}
 
-/* Оформление карточки ввода */
 .card{
 background:#fff;
-padding:30px;
+padding:25px;
 border-radius:20px;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
-width:min(95vw,550px);
-z-index:5}
+width:100%;
+max-width:500px;
+z-index:5;
+max-height:85dvh;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch}
 
 .card h2{text-align:center;margin-bottom:15px;font-size:22px}
 
@@ -42,7 +55,7 @@ gap:12px;
 margin-top:12px}
 
 .field label{
-width:220px;
+width:200px;
 font-size:14px;
 font-weight:700}
 
@@ -77,46 +90,45 @@ user-select:none}
 .form-currency{opacity:.12}
 .currency{opacity:.22}
 
-/* ИСПРАВЛЕННЫЙ ЭКРАН РУЛЕТКИ ДЛЯ ПК И ТЕЛЕФОНОВ */
 #main{
 display:none;
 flex-direction:column;
 justify-content:space-between;
 align-items:center;
-padding:4vh 10px;
+padding:calc(4dvh + env(safe-area-inset-top)) 15px calc(4dvh + env(safe-area-inset-bottom)) 15px;
 background:#fff}
 
 .title{
 font-family:"Comic Sans MS",cursive;
-font-size:clamp(24px, 5vh, 64px);
+font-size:clamp(22px, 4.5dvh, 56px);
 text-align:center;
 transform:rotate(-2deg);
 text-shadow:2px 2px 0 #ffd700;
 z-index:2;
-margin-bottom:2vh}
+margin-bottom:2dvh;
+width:100%}
 
 .row{
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-gap:3vh;
+gap:3dvh;
 width:100%;
 max-width:600px;
 z-index:2;
 flex-grow:1}
 
-/* Контейнер строго держит два колеса в один ряд везде */
 .wheels-container{
 display:flex;
 justify-content:center;
 align-items:center;
-gap:40px;
 width:100%}
 
+/* Адаптированный блок для одного центрального колеса */
 .wblock{
 text-align:center;
-width:min(35vw, 180px);
+width:min(55vw, 240px);
 display:flex;
 flex-direction:column;
 align-items:center}
@@ -137,15 +149,14 @@ border:5px solid #222;
 background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
 transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
-/* Кнопка под барабанами */
 #spinBtn{
 width:100%;
-max-width:340px;
-height:75px;
+max-width:320px;
+height:70px;
 background:#bdbdbd;
 border:none;
-font-size:22px;
-padding:10px 20px;
+font-size:20px;
+padding:10px 15px;
 white-space:normal;
 line-height:1.2;
 display:flex;
@@ -153,19 +164,18 @@ align-items:center;
 justify-content:center;
 text-align:center;
 transition:.4s;
-margin-top:2vh}
+margin-top:2dvh}
 
 .ready{
 background:linear-gradient(90deg,#d4af37,#ffd700)!important;
-font-size:18px !important;
-transform:scale(1.05);
+font-size:16px !important;
+transform:scale(1.03);
 animation:pulse 1s infinite}
 
 @keyframes pulse{
-50%{transform:scale(1.1)}
+50%{transform:scale(1.08)}
 }
 
-/* Попап */
 .popup{
 position:fixed;
 inset:0;
@@ -177,7 +187,7 @@ padding:15px;
 z-index:20}
 
 .popup .card h2{font-size:24px}
-.popup p{font-size:clamp(16px, 2.5vh, 22px) !important;line-height:1.5}
+.popup p{font-size:clamp(15px, 2.3dvh, 20px) !important;line-height:1.5}
 
 #thankYouBtn {
 background:linear-gradient(90deg, #4caf50, #81c784);
@@ -192,13 +202,12 @@ position:fixed;
 top:-20px;
 z-index:15}
 
-/* Адаптация формы для совсем маленьких мобилок в портрете */
 @media(max-width:480px){
-.field{flex-direction:column;align-items:flex-start;gap:6px}
+.card{padding:20px 15px}
+.field{flex-direction:column;align-items:flex-start;gap:4px}
 .field label{width:100%}
-.wheels-container{gap:20px}
-#spinBtn{font-size:18px;height:70px}
-.ready{font-size:15px !important}
+#spinBtn{font-size:17px;height:65px}
+.ready{font-size:14px !important}
 }
 </style>
 </head>
@@ -243,8 +252,8 @@ z-index:15}
 
 <div class="row">
 <div class="wheels-container">
+<!-- Оставлено только одно колесо -->
 <div class="wblock"><div class="pointer"></div><div id="w1" class="wheel"></div></div>
-<div class="wblock"><div class="pointer"></div><div id="w2" class="wheel"></div></div>
 </div>
 <button id="spinBtn">нажать</button>
 </div>
@@ -377,8 +386,8 @@ const sector=Math.floor(Math.random()*6);
 const center=sector*60+30;
 const rot=(360*8)+(360-center);
 
+// Логика вращения изменена под одно колесо
 w1.style.transform=`rotate(${rot}deg)`;
-w2.style.transform=`rotate(${rot}deg)`;
 
 setTimeout(()=>{
 conf=false;
@@ -408,7 +417,6 @@ a2b.value = '';
 a3.value = '';
 
 w1.style.transform = 'rotate(0deg)';
-w2.style.transform = 'rotate(0deg)';
 spinBtn.classList.remove('ready');
 spinBtn.textContent = 'нажать';
 
