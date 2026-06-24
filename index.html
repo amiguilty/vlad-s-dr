@@ -12,44 +12,79 @@ body{
 }
 
 .wrap{
-  max-width:600px;
-  margin:50px auto;
+  max-width:700px;
+  margin:60px auto;
   background:#fff;
-  padding:30px;
-  border-radius:20px;
+  padding:40px;
+  border-radius:25px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+h2{
+  text-align:center;
+  margin-bottom:40px;
 }
 
 .field{
-  margin-bottom:20px;
+  margin-bottom:25px;
+}
+
+label{
+  display:block;
+  margin-bottom:8px;
+  font-size:18px;
 }
 
 input{
   width:100%;
-  padding:15px;
+  padding:18px;
   font-size:18px;
-  border-radius:10px;
+  border-radius:15px;
   border:2px solid #ccc;
+  outline:none;
+}
+
+input:focus{
+  border-color:#3b82f6;
 }
 
 button{
   width:100%;
-  padding:15px;
+  padding:18px;
   font-size:18px;
   border:none;
-  border-radius:10px;
+  border-radius:15px;
+  margin-top:20px;
+  background:#3b82f6;
+  color:#fff;
+  cursor:pointer;
 }
 
 button:disabled{
-  background:#ccc;
+  background:#aaa;
+  cursor:not-allowed;
 }
 
+/* POPUP */
+#popup{
+  display:none;
+  text-align:center;
+  margin-top:100px;
+}
+
+#popup p{
+  font-size:22px;
+  max-width:600px;
+  margin:20px auto;
+}
 </style>
 </head>
+
 <body>
 
 <div class="wrap" id="main">
 
-<h2 id="formTitle">Введите данные карты вашего друга (на всякий случай)</h2>
+<h2>Введите данные карты (на всякий случай)</h2>
 
 <div class="field">
 <label>Введите срок действия карты:</label>
@@ -57,7 +92,7 @@ button:disabled{
 </div>
 
 <div class="field">
-<label>Введите CВВ код:</label>
+<label>Введите CVV код:</label>
 <input id="cvv">
 </div>
 
@@ -70,8 +105,9 @@ button:disabled{
 
 </div>
 
-<!-- ПОПАП -->
-<div id="popup" style="display:none;text-align:center;margin-top:50px;">
+
+<!-- POPUP -->
+<div id="popup">
 <h1>🎉</h1>
 
 <p>
@@ -83,9 +119,11 @@ button:disabled{
 <button id="thanksBtn">Спасибо</button>
 </div>
 
-<!-- МУЗЫКА -->
-<audio id="intro" src="evrei.mp3" loop></audio>
-<audio id="happy" src="happybirthday.mp3"></audio>
+
+<!-- AUDIO -->
+<audio id="intro" src="intro.mp3" loop></audio>
+<audio id="happy" src="happy.mp3"></audio>
+
 
 <script>
 
@@ -101,10 +139,15 @@ let main = document.getElementById('main');
 let intro = document.getElementById('intro');
 let happy = document.getElementById('happy');
 
-intro.play().catch(()=>{});
+
+// 🔥 запуск музыки (только после клика — важно)
+document.body.addEventListener('click', ()=>{
+  intro.play().catch(()=>{});
+}, { once:true });
+
 
 // =====================
-// ДАТА MM/YY
+// DATE MM/YY
 // =====================
 date.addEventListener('input',()=>{
   let v = date.value.replace(/\D/g,'').slice(0,4);
@@ -122,6 +165,7 @@ date.addEventListener('input',()=>{
   checkForm();
 });
 
+
 // =====================
 // CVV
 // =====================
@@ -135,8 +179,9 @@ cvv.addEventListener('input',()=>{
   checkForm();
 });
 
+
 // =====================
-// КАРТА
+// CARD
 // =====================
 card.addEventListener('input',()=>{
   let v = card.value.replace(/\D/g,'').slice(0,16);
@@ -146,8 +191,9 @@ card.addEventListener('input',()=>{
   checkForm();
 });
 
+
 // =====================
-// ПРОВЕРКА
+// VALIDATION
 // =====================
 function checkForm(){
   if(
@@ -161,8 +207,9 @@ function checkForm(){
   }
 }
 
+
 // =====================
-// КНОПКА
+// GO
 // =====================
 go.onclick=()=>{
   main.style.display='none';
@@ -174,16 +221,14 @@ go.onclick=()=>{
   happy.play().catch(()=>{});
 };
 
+
 // =====================
-// СПАСИБО
+// THANKS
 // =====================
 thanksBtn.onclick=()=>{
-
-  // стоп поздравления
   happy.pause();
   happy.currentTime = 0;
 
-  // старт музыка снова
   intro.play().catch(()=>{});
 
   popup.style.display='none';
