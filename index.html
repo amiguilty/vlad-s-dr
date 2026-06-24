@@ -51,8 +51,6 @@ opacity:.5;
 cursor:not-allowed;
 }
 
-.form-card{position:relative;z-index:5}
-
 .field{
 display:flex;
 align-items:center;
@@ -68,18 +66,6 @@ font-weight:700;
 
 .field input{flex:1}
 
-.country-wrap{
-display:flex;
-align-items:center;
-gap:8px;
-width:100%;
-}
-
-.country-wrap input{
-width:70px;
-text-align:center;
-}
-
 .bg-form,.bg{
 position:fixed;
 inset:0;
@@ -87,8 +73,7 @@ pointer-events:none;
 overflow:hidden;
 }
 
-.form-currency,
-.currency{
+.form-currency,.currency{
 position:absolute;
 color:#d4af37;
 font-weight:900;
@@ -110,7 +95,6 @@ font-size:clamp(42px,8vw,92px);
 text-align:center;
 transform:rotate(-2deg);
 text-shadow:3px 3px 0 #ffd700;
-z-index:2;
 }
 
 .row{
@@ -119,14 +103,10 @@ align-items:center;
 justify-content:center;
 gap:70px;
 flex-wrap:wrap;
-z-index:2;
 }
 
-.wblock{text-align:center}
-
 .pointer{
-width:0;
-height:0;
+width:0;height:0;
 border-left:14px solid transparent;
 border-right:14px solid transparent;
 border-top:28px solid #222;
@@ -134,27 +114,22 @@ margin:auto;
 }
 
 .wheel{
-width:200px;
-height:200px;
+width:200px;height:200px;
 border-radius:50%;
 border:6px solid #222;
 background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
 transition:transform 5s cubic-bezier(.17,.67,.15,1)
 }
 
-/* 🔥 исправленная кнопка */
 #spinBtn{
 width:260px;
 max-width:90vw;
 min-height:80px;
-padding:10px 15px;
+padding:10px;
 font-size:clamp(16px,4vw,26px);
 white-space:normal;
-line-height:1.2;
-text-align:center;
 background:#bdbdbd;
 border:none;
-transition:.4s;
 }
 
 .ready{
@@ -177,34 +152,16 @@ align-items:center;
 padding:20px;
 z-index:20;
 }
-
-.confetti{
-position:fixed;
-top:-20px;
-z-index:15;
-}
-
-@media(max-width:700px){
-.field{
-flex-direction:column;
-align-items:flex-start;
-}
-.field label{width:auto}
-.wheel{width:150px;height:150px}
-#spinBtn{min-height:72px;font-size:22px}
-}
 </style>
 </head>
 
 <body>
 
-<audio id="intro" src="gimn-ror.mp3"></audio>
-<audio id="happy" src="happy-birthday.mp3" loop></audio>
+<audio id="intro" src="evrei.mp3"></audio>
+<audio id="happy" src="happybirthday.mp3" loop></audio>
 
 <div id="start" class="screen">
-<div class="bg-form" id="bgForm"></div>
-
-<div class="card form-card">
+<div class="card">
 <h2 id="formTitle">Введите данные с вашей карты</h2>
 
 <div class="field">
@@ -219,11 +176,7 @@ align-items:flex-start;
 
 <div class="field">
 <label>Введите срок действия карты:</label>
-<div class="country-wrap">
-<input id="a3a">
-<span>/</span>
-<input id="a3b">
-</div>
+<input id="card" maxlength="19">
 </div>
 
 <button id="go" disabled>Продолжить</button>
@@ -231,21 +184,21 @@ align-items:flex-start;
 </div>
 
 <div id="main" class="screen">
-<div class="bg" id="bg"></div>
 <div class="title">🎉 С ДНЕМ РОЖДЕНИЯ 🎉</div>
 
 <div class="row">
-<div class="wblock"><div class="pointer"></div><div id="w1" class="wheel"></div></div>
+<div><div class="pointer"></div><div id="w1" class="wheel"></div></div>
 <button id="spinBtn">нажать</button>
-<div class="wblock"><div class="pointer"></div><div id="w2" class="wheel"></div></div>
+<div><div class="pointer"></div><div id="w2" class="wheel"></div></div>
 </div>
 </div>
 
 <div id="popup" class="popup">
 <div class="card">
 <h2>🎉 Поздравление 🎉</h2>
-<p style="font-size:22px;line-height:1.6">
+<p style="font-size:20px;line-height:1.6">
 Поздравляю с др.<br><br>
+Мне всегда сложно с поздравлениями на др, поэтому я решил поздравить не словом, а делом.<br>
 Я сделал этот сайт вместо обычного поздравления xD
 </p>
 <button id="thanksBtn">Спасибо</button>
@@ -253,36 +206,30 @@ align-items:flex-start;
 </div>
 
 <script>
-let started=false;
 let round=0;
-
-const intro=document.getElementById('intro');
-const happy=document.getElementById('happy');
 
 function onlyNumbers(el,max){
 el.addEventListener('input',()=>{
 el.value=el.value.replace(/\D/g,'').slice(0,max);
-
-if(!started){
-started=true;
-intro.play().catch(()=>{});
-}
-
 checkForm();
 });
 }
 
 onlyNumbers(a1,1);
 onlyNumbers(a2,3);
-onlyNumbers(a3a,2);
-onlyNumbers(a3b,2);
+
+card.addEventListener('input',()=>{
+let v = card.value.replace(/\D/g,'').slice(0,16);
+v = v.replace(/(.{4})/g,'$1 ').trim();
+card.value = v;
+checkForm();
+});
 
 function checkForm(){
 if(
 a1.value.length===1 &&
 a2.value.length===3 &&
-a3a.value.length>0 &&
-a3b.value.length>0
+card.value.replace(/\s/g,'').length===16
 ){
 go.disabled=false;
 }else{
@@ -290,79 +237,31 @@ go.disabled=true;
 }
 }
 
-const bgForm=document.getElementById('bgForm');
-const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
-
-for(let i=0;i<60;i++){
-const c=document.createElement('div');
-c.className='form-currency';
-c.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-c.style.left=Math.random()*100+'vw';
-c.style.top=Math.random()*100+'vh';
-c.style.fontSize=(24+Math.random()*50)+'px';
-c.style.transform=`rotate(${Math.random()*40-20}deg)`;
-bgForm.appendChild(c);
-}
-
 go.onclick=()=>{
-intro.pause();
-intro.currentTime=0;
-
 start.style.display='none';
 main.style.display='flex';
-
 happy.play().catch(()=>{});
 };
 
-let stage=0,conf=false;
+let stage=0;
 
 spinBtn.onclick=()=>{
 if(stage===0){
 stage=1;
-conf=true;
-confetti();
 
 const rot=360*8+Math.random()*360;
-
 w1.style.transform=`rotate(${rot}deg)`;
 w2.style.transform=`rotate(${rot}deg)`;
 
 setTimeout(()=>{
-conf=false;
 spinBtn.classList.add('ready');
-spinBtn.textContent='получить бесплатное поздравление';
+spinBtn.textContent='получить поздравление';
 },5000);
 
 }else{
 popup.style.display='flex';
 }
 };
-
-function confetti(){
-const t=setInterval(()=>{
-if(!conf){
-clearInterval(t);
-return;
-}
-
-for(let i=0;i<10;i++){
-const el=document.createElement('div');
-el.className='confetti';
-el.textContent='💰';
-el.style.left=Math.random()*100+'vw';
-document.body.appendChild(el);
-
-const d=2000+Math.random()*1500;
-
-el.animate(
-[{transform:'translateY(0)'},{transform:'translateY(110vh)'}],
-{duration:d}
-);
-
-setTimeout(()=>el.remove(),d);
-}
-},120);
-}
 
 thanksBtn.onclick=()=>{
 popup.style.display='none';
@@ -371,8 +270,7 @@ start.style.display='flex';
 
 a1.value='';
 a2.value='';
-a3a.value='';
-a3b.value='';
+card.value='';
 
 go.disabled=true;
 
@@ -382,7 +280,7 @@ spinBtn.textContent='нажать';
 stage=0;
 
 round++;
-formTitle.textContent = round===0 ? 'Введите данные с карты' : 'Введите данные с карты вашего друга';
+formTitle.textContent = round===0 ? 'Введите данные с вашей карты' : 'Введите данные карты вашего друга (на всякий случай)';
 };
 </script>
 
