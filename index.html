@@ -8,23 +8,24 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#fff;overflow:hidden}
 
-.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center}
+.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;padding:15px}
 
 .card{
 background:#fff;
-padding:30px;
+padding:20px;
 border-radius:20px;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
-width:min(95vw,700px);
+width:min(95vw,900px);
 z-index:5;
 }
 
-.card h2{text-align:center;margin-bottom:15px}
+.card h2{text-align:center;margin-bottom:20px;font-size:clamp(28px,4vw,52px)}
 
 input,button{
 padding:14px;
 border-radius:12px;
 border:1px solid #ccc;
+font-size:18px;
 }
 
 button{
@@ -40,17 +41,18 @@ margin-top:15px;
 display:flex;
 align-items:center;
 gap:12px;
-margin-top:12px;
+margin-top:18px;
 }
 
 .field label{
-width:250px;
-font-size:14px;
+width:320px;
+font-size:clamp(16px,2vw,22px);
 font-weight:700;
 }
 
 .field input{
 flex:1;
+min-width:0;
 }
 
 .country-wrap{
@@ -61,7 +63,7 @@ width:100%;
 }
 
 .country-wrap input{
-width:70px;
+width:100%;
 text-align:center;
 }
 
@@ -72,21 +74,15 @@ pointer-events:none;
 overflow:hidden;
 }
 
-.form-currency,
-.currency{
+.form-currency,.currency{
 position:absolute;
 color:#d4af37;
 font-weight:900;
 user-select:none;
 }
 
-.form-currency{
-opacity:.12;
-}
-
-.currency{
-opacity:.22;
-}
+.form-currency{opacity:.12}
+.currency{opacity:.22}
 
 #main{
 display:none;
@@ -96,7 +92,7 @@ gap:25px;
 
 .title{
 font-family:"Comic Sans MS",cursive;
-font-size:clamp(42px,8vw,92px);
+font-size:clamp(36px,8vw,92px);
 text-align:center;
 transform:rotate(-2deg);
 text-shadow:3px 3px 0 #ffd700;
@@ -107,7 +103,7 @@ z-index:2;
 display:flex;
 align-items:center;
 justify-content:center;
-gap:70px;
+gap:40px;
 flex-wrap:wrap;
 z-index:2;
 }
@@ -115,8 +111,7 @@ z-index:2;
 .wblock{text-align:center}
 
 .pointer{
-width:0;
-height:0;
+width:0;height:0;
 border-left:14px solid transparent;
 border-right:14px solid transparent;
 border-top:28px solid #222;
@@ -124,8 +119,7 @@ margin:auto;
 }
 
 .wheel{
-width:200px;
-height:200px;
+width:200px;height:200px;
 border-radius:50%;
 border:6px solid #222;
 background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
@@ -148,9 +142,7 @@ transform:scale(1.15);
 animation:pulse 1s infinite;
 }
 
-@keyframes pulse{
-50%{transform:scale(1.22)}
-}
+@keyframes pulse{50%{transform:scale(1.22)}}
 
 .popup{
 position:fixed;
@@ -163,35 +155,26 @@ padding:20px;
 z-index:20;
 }
 
-.confetti{
-position:fixed;
-top:-20px;
-z-index:15;
-}
+.confetti{position:fixed;top:-20px;z-index:15}
 
 @media(max-width:700px){
-.field{
-flex-direction:column;
-align-items:flex-start;
-}
-.field label{
-width:auto;
-}
-.wheel{width:150px;height:150px}
-#spinBtn{height:72px;font-size:22px}
+body{overflow:auto}
+.card{padding:16px}
+.field{flex-direction:column;align-items:stretch}
+.field label{width:auto}
+.wheel{width:140px;height:140px}
+#spinBtn{height:70px;font-size:20px}
+input,button{font-size:16px}
 }
 </style>
 </head>
 <body>
 
-<audio id="intro" src="evrei.mp3"></audio>
-<audio id="happy" src="happybirthday.mp3" loop></audio>
-
 <div id="start" class="screen">
 <div class="bg-form" id="bgForm"></div>
 
 <div class="card form-card">
-<h2>Введите данные вашей карты</h2>
+<h2 id="formTitle">Введите данные вашей карты</h2>
 
 <div class="field">
 <label>Введите номер карты:</label>
@@ -230,40 +213,36 @@ width:auto;
 <div id="popup" class="popup">
 <div class="card">
 <h2>🎉 Поздравление 🎉</h2>
+
 <p style="font-size:22px;line-height:1.6">
 Поздравляю с др.<br><br>
 Да, я определенно не силен в поздравлениях. Мне всегда дается это тяжело.
 По-этому я выбрал вариант поздравления действием, сделав такой сайт-прикол,
 думаю это не хуже обычного поздравления!!
 </p>
+
+<button id="thanksBtn">Спасибо</button>
 </div>
 </div>
 
 <script>
 let started=false;
-
-const intro = document.getElementById('intro');
-const happy = document.getElementById('happy');
+let friendCounter=0;
 
 function formatCardNumber(value){
-value = value.replace(/\D/g,'').substring(0,16);
+value=value.replace(/\D/g,'').substring(0,16);
 return value.replace(/(\d{4})(?=\d)/g,'$1 ');
 }
 
-function onlyNumbers(el, next=null, formatter=null){
+function onlyNumbers(el,next=null,formatter=null){
 el.addEventListener('input',()=>{
 if(formatter){
-el.value = formatter(el.value);
+el.value=formatter(el.value);
 }else{
 el.value=el.value.replace(/\D/g,'');
 }
 
-if(!started){
-started=true;
-intro.play().catch(()=>{});
-}
-
-if(next && el.value.replace(/\D/g,'').length === el.maxLength){
+if(next && el.value.replace(/\D/g,'').length===16){
 next.focus();
 }
 
@@ -271,69 +250,30 @@ checkForm();
 });
 }
 
-onlyNumbers(a1, a2a, formatCardNumber);
-onlyNumbers(a2a, a2b);
-onlyNumbers(a2b, a3);
+onlyNumbers(a1,a3,formatCardNumber);
+onlyNumbers(a2a);
+onlyNumbers(a2b);
 onlyNumbers(a3);
 
 function checkForm(){
-if(
-a1.value.replace(/\s/g,'').length === 16 &&
-a2a.value.length === 2 &&
-a2b.value.length === 2 &&
-a3.value.length === 3
-){
-go.disabled = false;
-}else{
-go.disabled = true;
-}
-}
-
-const bgForm=document.getElementById('bgForm');
-const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
-
-for(let i=0;i<60;i++){
-const c=document.createElement('div');
-c.className='form-currency';
-c.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-c.style.left=Math.random()*100+'vw';
-c.style.top=Math.random()*100+'vh';
-c.style.fontSize=(24+Math.random()*50)+'px';
-c.style.transform=`rotate(${Math.random()*40-20}deg)`;
-bgForm.appendChild(c);
+go.disabled = !(
+a1.value.replace(/\s/g,'').length===16 &&
+a2a.value.length===2 &&
+a2b.value.length===2 &&
+a3.value.length===3
+);
 }
 
 go.onclick=()=>{
-intro.pause();
-intro.currentTime=0;
-
 start.style.display='none';
 main.style.display='flex';
-
-happy.play().catch(()=>{});
-
-const s=['₿','Ξ','$','€','£','¥','₽','₴'];
-
-for(let i=0;i<120;i++){
-let d=document.createElement('div');
-d.className='currency';
-d.textContent=s[Math.floor(Math.random()*s.length)];
-d.style.left=Math.random()*100+'vw';
-d.style.top=Math.random()*100+'vh';
-d.style.fontSize=(18+Math.random()*28)+'px';
-d.style.transform=`rotate(${Math.floor(Math.random()*40-20)}deg)`;
-bg.appendChild(d);
-}
 };
 
-let stage=0,conf=false;
+let stage=0;
 
 spinBtn.onclick=()=>{
 if(stage===0){
-
 stage=1;
-conf=true;
-confetti();
 
 const sector=Math.floor(Math.random()*6);
 const center=sector*60+30;
@@ -343,7 +283,6 @@ w1.style.transform=`rotate(${rot}deg)`;
 w2.style.transform=`rotate(${rot}deg)`;
 
 setTimeout(()=>{
-conf=false;
 spinBtn.classList.add('ready');
 spinBtn.textContent='получить бесплатное поздравление';
 },5000);
@@ -353,50 +292,33 @@ popup.style.display='flex';
 }
 };
 
-function confetti(){
+thanksBtn.onclick=()=>{
+popup.style.display='none';
 
-const money=['💵','💶','💷','💴','🪙','💰'];
+friendCounter++;
 
-const t=setInterval(()=>{
+document.getElementById('formTitle').textContent =
+friendCounter===0
+? 'Введите данные вашей карты'
+: 'Введите данные карты вашего друга';
 
-if(!conf){
-clearInterval(t);
-return;
-}
+start.style.display='flex';
+main.style.display='none';
 
-for(let i=0;i<14;i++){
+a1.value='';
+a2a.value='';
+a2b.value='';
+a3.value='';
 
-const el=document.createElement('div');
-el.className='confetti';
+go.disabled=true;
 
-if(Math.random()>0.5){
+stage=0;
+spinBtn.classList.remove('ready');
+spinBtn.textContent='нажать';
 
-el.style.background=['red','blue','yellow','green','purple'][Math.floor(Math.random()*5)];
-el.style.width='10px';
-el.style.height='14px';
-
-}else{
-
-el.textContent=money[Math.floor(Math.random()*money.length)];
-el.style.fontSize='26px';
-
-}
-
-el.style.left=Math.random()*100+'vw';
-
-document.body.appendChild(el);
-
-const d=2000+Math.random()*1500;
-
-el.animate(
-[{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(720deg)'}],
-{duration:d}
-);
-
-setTimeout(()=>el.remove(),d);
-}
-},120);
-}
+w1.style.transform='rotate(0deg)';
+w2.style.transform='rotate(0deg)';
+};
 </script>
 </body>
 </html>
