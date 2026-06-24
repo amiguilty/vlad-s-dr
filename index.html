@@ -2,286 +2,200 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>С Днем Рождения</title>
+<title>🎁</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-
 body{
-font-family:Arial,sans-serif;
-background:#fff;
-overflow:hidden;
+  margin:0;
+  font-family:sans-serif;
+  background:#eee;
 }
 
-.screen{
-position:fixed;
-inset:0;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.card{
-background:#fff;
-padding:30px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-width:min(95vw,700px);
-z-index:5;
-}
-
-.card h2{text-align:center;margin-bottom:15px}
-
-input,button{
-padding:14px;
-border-radius:12px;
-border:1px solid #ccc;
-}
-
-button{
-width:100%;
-cursor:pointer;
-font-weight:700;
-margin-top:15px;
-}
-
-button:disabled{
-opacity:.5;
-cursor:not-allowed;
+.wrap{
+  max-width:600px;
+  margin:50px auto;
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
 }
 
 .field{
-display:flex;
-align-items:center;
-gap:12px;
-margin-top:12px;
+  margin-bottom:20px;
 }
 
-.field label{
-width:250px;
-font-size:14px;
-font-weight:700;
+input{
+  width:100%;
+  padding:15px;
+  font-size:18px;
+  border-radius:10px;
+  border:2px solid #ccc;
 }
 
-.field input{flex:1}
-
-.bg-form,.bg{
-position:fixed;
-inset:0;
-pointer-events:none;
-overflow:hidden;
+button{
+  width:100%;
+  padding:15px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
 }
 
-.form-currency,.currency{
-position:absolute;
-color:#d4af37;
-font-weight:900;
-user-select:none;
+button:disabled{
+  background:#ccc;
 }
 
-.form-currency{opacity:.12}
-.currency{opacity:.22}
-
-#main{
-display:none;
-flex-direction:column;
-gap:25px;
-}
-
-.title{
-font-family:"Comic Sans MS",cursive;
-font-size:clamp(42px,8vw,92px);
-text-align:center;
-transform:rotate(-2deg);
-text-shadow:3px 3px 0 #ffd700;
-}
-
-.row{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:70px;
-flex-wrap:wrap;
-}
-
-.pointer{
-width:0;height:0;
-border-left:14px solid transparent;
-border-right:14px solid transparent;
-border-top:28px solid #222;
-margin:auto;
-}
-
-.wheel{
-width:200px;height:200px;
-border-radius:50%;
-border:6px solid #222;
-background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
-transition:transform 5s cubic-bezier(.17,.67,.15,1)
-}
-
-#spinBtn{
-width:260px;
-max-width:90vw;
-min-height:80px;
-padding:10px;
-font-size:clamp(16px,4vw,26px);
-white-space:normal;
-background:#bdbdbd;
-border:none;
-}
-
-.ready{
-background:linear-gradient(90deg,#d4af37,#ffd700)!important;
-transform:scale(1.15);
-animation:pulse 1s infinite;
-}
-
-@keyframes pulse{
-50%{transform:scale(1.22)}
-}
-
-.popup{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.5);
-display:none;
-justify-content:center;
-align-items:center;
-padding:20px;
-z-index:20;
-}
 </style>
 </head>
-
 <body>
 
-<audio id="intro" src="evrei.mp3"></audio>
-<audio id="happy" src="happybirthday.mp3" loop></audio>
+<div class="wrap" id="main">
 
-<div id="start" class="screen">
-<div class="card">
-<h2 id="formTitle">Введите данные с вашей карты</h2>
-
-<div class="field">
-<label>Введите номер карты:</label>
-<input id="a1">
-</div>
-
-<div class="field">
-<label>Введите СВВ код:</label>
-<input id="a2">
-</div>
+<h2 id="formTitle">Введите данные карты вашего друга (на всякий случай)</h2>
 
 <div class="field">
 <label>Введите срок действия карты:</label>
-<input id="card" maxlength="19">
+<input id="date" maxlength="5" placeholder="MM/YY">
+</div>
+
+<div class="field">
+<label>Введите CВВ код:</label>
+<input id="cvv">
+</div>
+
+<div class="field">
+<label>Введите номер карты:</label>
+<input id="card">
 </div>
 
 <button id="go" disabled>Продолжить</button>
-</div>
+
 </div>
 
-<div id="main" class="screen">
-<div class="title">🎉 С ДНЕМ РОЖДЕНИЯ 🎉</div>
+<!-- ПОПАП -->
+<div id="popup" style="display:none;text-align:center;margin-top:50px;">
+<h1>🎉</h1>
 
-<div class="row">
-<div><div class="pointer"></div><div id="w1" class="wheel"></div></div>
-<button id="spinBtn">нажать</button>
-<div><div class="pointer"></div><div id="w2" class="wheel"></div></div>
-</div>
-</div>
-
-<div id="popup" class="popup">
-<div class="card">
-<h2>🎉 Поздравление 🎉</h2>
-<p style="font-size:20px;line-height:1.6">
+<p>
 Поздравляю с др.<br><br>
 Мне всегда сложно с поздравлениями на др, поэтому я решил поздравить не словом, а делом.<br>
 Я сделал этот сайт вместо обычного поздравления xD
 </p>
+
 <button id="thanksBtn">Спасибо</button>
 </div>
-</div>
+
+<!-- МУЗЫКА -->
+<audio id="intro" src="evrei.mp3" loop></audio>
+<audio id="happy" src="happybirthday.mp3"></audio>
 
 <script>
-let round=0;
 
-function onlyNumbers(el,max){
-el.addEventListener('input',()=>{
-el.value=el.value.replace(/\D/g,'').slice(0,max);
-checkForm();
+let date = document.getElementById('date');
+let cvv = document.getElementById('cvv');
+let card = document.getElementById('card');
+let go = document.getElementById('go');
+
+let popup = document.getElementById('popup');
+let thanksBtn = document.getElementById('thanksBtn');
+let main = document.getElementById('main');
+
+let intro = document.getElementById('intro');
+let happy = document.getElementById('happy');
+
+intro.play().catch(()=>{});
+
+// =====================
+// ДАТА MM/YY
+// =====================
+date.addEventListener('input',()=>{
+  let v = date.value.replace(/\D/g,'').slice(0,4);
+
+  if(v.length >= 3){
+    v = v.slice(0,2) + '/' + v.slice(2);
+  }
+
+  date.value = v;
+
+  if(v.length === 5){
+    cvv.focus();
+  }
+
+  checkForm();
 });
-}
 
-onlyNumbers(a1,1);
-onlyNumbers(a2,3);
+// =====================
+// CVV
+// =====================
+cvv.addEventListener('input',()=>{
+  cvv.value = cvv.value.replace(/\D/g,'').slice(0,3);
 
+  if(cvv.value.length === 3){
+    card.focus();
+  }
+
+  checkForm();
+});
+
+// =====================
+// КАРТА
+// =====================
 card.addEventListener('input',()=>{
-let v = card.value.replace(/\D/g,'').slice(0,16);
-v = v.replace(/(.{4})/g,'$1 ').trim();
-card.value = v;
-checkForm();
+  let v = card.value.replace(/\D/g,'').slice(0,16);
+  v = v.replace(/(.{4})/g,'$1 ').trim();
+  card.value = v;
+
+  checkForm();
 });
 
+// =====================
+// ПРОВЕРКА
+// =====================
 function checkForm(){
-if(
-a1.value.length===1 &&
-a2.value.length===3 &&
-card.value.replace(/\s/g,'').length===16
-){
-go.disabled=false;
-}else{
-go.disabled=true;
-}
+  if(
+    date.value.length === 5 &&
+    cvv.value.length === 3 &&
+    card.value.replace(/\s/g,'').length === 16
+  ){
+    go.disabled = false;
+  } else {
+    go.disabled = true;
+  }
 }
 
+// =====================
+// КНОПКА
+// =====================
 go.onclick=()=>{
-start.style.display='none';
-main.style.display='flex';
-happy.play().catch(()=>{});
+  main.style.display='none';
+  popup.style.display='block';
+
+  intro.pause();
+  intro.currentTime = 0;
+
+  happy.play().catch(()=>{});
 };
 
-let stage=0;
-
-spinBtn.onclick=()=>{
-if(stage===0){
-stage=1;
-
-const rot=360*8+Math.random()*360;
-w1.style.transform=`rotate(${rot}deg)`;
-w2.style.transform=`rotate(${rot}deg)`;
-
-setTimeout(()=>{
-spinBtn.classList.add('ready');
-spinBtn.textContent='получить поздравление';
-},5000);
-
-}else{
-popup.style.display='flex';
-}
-};
-
+// =====================
+// СПАСИБО
+// =====================
 thanksBtn.onclick=()=>{
-popup.style.display='none';
-main.style.display='none';
-start.style.display='flex';
 
-a1.value='';
-a2.value='';
-card.value='';
+  // стоп поздравления
+  happy.pause();
+  happy.currentTime = 0;
 
-go.disabled=true;
+  // старт музыка снова
+  intro.play().catch(()=>{});
 
-spinBtn.classList.remove('ready');
-spinBtn.textContent='нажать';
+  popup.style.display='none';
+  main.style.display='block';
 
-stage=0;
+  date.value='';
+  cvv.value='';
+  card.value='';
 
-round++;
-formTitle.textContent = round===0 ? 'Введите данные с вашей карты' : 'Введите данные карты вашего друга (на всякий случай)';
+  go.disabled=true;
 };
+
 </script>
 
 </body>
