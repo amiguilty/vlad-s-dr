@@ -116,16 +116,24 @@ background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,g
 transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
 #spinBtn{
-width:260px;
+width:320px;
 max-width:90vw;
 height:80px;
 background:#bdbdbd;
 border:none;
-font-size:26px;
+font-size:24px;
+padding:10px 15px;
+white-space:normal;
+line-height:1.2;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
 transition:.4s}
 
 .ready{
 background:linear-gradient(90deg,#d4af37,#ffd700)!important;
+font-size:18px !important;
 transform:scale(1.15);
 animation:pulse 1s infinite}
 
@@ -167,7 +175,8 @@ align-items:flex-start}
 .field label{
 width:auto}
 .wheel{width:150px;height:150px}
-#spinBtn{height:72px;font-size:22px}
+#spinBtn{height:75px;font-size:20px}
+.ready{font-size:16px !important}
 }
 </style>
 </head>
@@ -175,6 +184,8 @@ width:auto}
 
 <audio id="intro" src="evrei.mp3"></audio>
 <audio id="happy" src="happybirthday.mp3" loop></audio>
+<!-- Новый аудиоэлемент для звука "zvuk" -->
+<audio id="zvuk" src="zvuk.mp3"></audio>
 
 <div id="start" class="screen">
 <div class="bg-form" id="bgForm"></div>
@@ -234,6 +245,7 @@ let started=false;
 
 const intro = document.getElementById('intro');
 const happy = document.getElementById('happy');
+const zvuk = document.getElementById('zvuk'); // Переменная для нового звука
 const formTitle = document.getElementById('formTitle');
 
 function formatCardNumber(value){
@@ -254,13 +266,11 @@ started=true;
 intro.play().catch(()=>{});
 }
 
-// Проверка длины для осуществления прыжка
 let currentLength = el.value.replace(/\s/g,'').length;
 let targetLength = el === a1 ? 16 : parseInt(el.getAttribute('maxlength'));
 
 if(next && currentLength === targetLength){
 next.focus();
-// Дополнительный скролл для мобильных устройств, чтобы гарантировать видимость новой строки
 next.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -307,6 +317,9 @@ bgForm.appendChild(c);
 go.onclick=()=>{
 intro.pause();
 intro.currentTime=0;
+
+// Проигрывание дополнительного звука при нажатии кнопки продолжить
+zvuk.play().catch(()=>{});
 
 start.style.display='none';
 main.style.display='flex';
@@ -358,6 +371,9 @@ popup.style.display='flex';
 document.getElementById('thankYouBtn').onclick = () => {
 happy.pause();
 happy.currentTime = 0;
+// Останавливаем и сбрасываем дополнительный звук при возврате
+zvuk.pause();
+zvuk.currentTime = 0;
 
 popup.style.display = 'none';
 main.style.display = 'none';
