@@ -78,7 +78,7 @@ transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
 <script>
 let started=false;
-const intro=intro=document.getElementById('intro');
+const intro = document.getElementById('intro');
 ['a1','a2','a3'].forEach(id=>{
 document.getElementById(id).addEventListener('input',()=>{
 if(!started){started=true;intro.play().catch(()=>{});}
