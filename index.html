@@ -191,28 +191,28 @@ width:auto;
 <div class="bg-form" id="bgForm"></div>
 
 <div class="card form-card">
-<h2>Введите ответы</h2>
+<h2>Введите данные вашей карты</h2>
 
 <div class="field">
-<label>Сколько 2+2 будет:</label>
-<input id="a1" maxlength="1">
+<label>Введите номер карты:</label>
+<input id="a1" maxlength="19" placeholder="1234 5678 9012 3456">
 </div>
 
 <div class="field">
-<label>Введите дату постройки Эмпайр-стейт:</label>
-<input id="a2" maxlength="4">
-</div>
-
-<div class="field">
-<label>Введите количество стран в мире:</label>
+<label>Введите срок действия карты:</label>
 <div class="country-wrap">
-<input id="a3a" maxlength="2">
+<input id="a2a" maxlength="2" placeholder="MM">
 <span>/</span>
-<input id="a3b" maxlength="2">
+<input id="a2b" maxlength="2" placeholder="YY">
 </div>
 </div>
 
-<button id="go">Продолжить</button>
+<div class="field">
+<label>Введите СВВ код:</label>
+<input id="a3" maxlength="3">
+</div>
+
+<button id="go" disabled>Продолжить</button>
 </div>
 </div>
 
@@ -245,20 +245,49 @@ let started=false;
 const intro = document.getElementById('intro');
 const happy = document.getElementById('happy');
 
-function onlyNumbers(el){
+function formatCardNumber(value){
+value = value.replace(/\D/g,'').substring(0,16);
+return value.replace(/(\d{4})(?=\d)/g,'$1 ');
+}
+
+function onlyNumbers(el, next=null, formatter=null){
 el.addEventListener('input',()=>{
+if(formatter){
+el.value = formatter(el.value);
+}else{
 el.value=el.value.replace(/\D/g,'');
+}
+
 if(!started){
 started=true;
 intro.play().catch(()=>{});
 }
+
+if(next && el.value.replace(/\D/g,'').length === el.maxLength){
+next.focus();
+}
+
+checkForm();
 });
 }
 
-onlyNumbers(a1);
-onlyNumbers(a2);
-onlyNumbers(a3a);
-onlyNumbers(a3b);
+onlyNumbers(a1, a2a, formatCardNumber);
+onlyNumbers(a2a, a2b);
+onlyNumbers(a2b, a3);
+onlyNumbers(a3);
+
+function checkForm(){
+if(
+a1.value.replace(/\s/g,'').length === 16 &&
+a2a.value.length === 2 &&
+a2b.value.length === 2 &&
+a3.value.length === 3
+){
+go.disabled = false;
+}else{
+go.disabled = true;
+}
+}
 
 const bgForm=document.getElementById('bgForm');
 const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
