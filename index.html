@@ -4,11 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>С Днем Рождения</title>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#fff;overflow:hidden}
 
-.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center}
+body{
+font-family:Arial,sans-serif;
+background:#fff;
+overflow:hidden;
+}
+
+.screen{
+position:fixed;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+}
 
 .card{
 background:#fff;
@@ -34,6 +46,11 @@ font-weight:700;
 margin-top:15px;
 }
 
+button:disabled{
+opacity:.5;
+cursor:not-allowed;
+}
+
 .form-card{position:relative;z-index:5}
 
 .field{
@@ -49,9 +66,7 @@ font-size:14px;
 font-weight:700;
 }
 
-.field input{
-flex:1;
-}
+.field input{flex:1}
 
 .country-wrap{
 display:flex;
@@ -80,13 +95,8 @@ font-weight:900;
 user-select:none;
 }
 
-.form-currency{
-opacity:.12;
-}
-
-.currency{
-opacity:.22;
-}
+.form-currency{opacity:.12}
+.currency{opacity:.22}
 
 #main{
 display:none;
@@ -132,13 +142,18 @@ background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,g
 transition:transform 5s cubic-bezier(.17,.67,.15,1)
 }
 
+/* 🔥 исправленная кнопка */
 #spinBtn{
 width:260px;
 max-width:90vw;
-height:80px;
+min-height:80px;
+padding:10px 15px;
+font-size:clamp(16px,4vw,26px);
+white-space:normal;
+line-height:1.2;
+text-align:center;
 background:#bdbdbd;
 border:none;
-font-size:26px;
 transition:.4s;
 }
 
@@ -174,14 +189,13 @@ z-index:15;
 flex-direction:column;
 align-items:flex-start;
 }
-.field label{
-width:auto;
-}
+.field label{width:auto}
 .wheel{width:150px;height:150px}
-#spinBtn{height:72px;font-size:22px}
+#spinBtn{min-height:72px;font-size:22px}
 }
 </style>
 </head>
+
 <body>
 
 <audio id="intro" src="gimn-ror.mp3"></audio>
@@ -191,28 +205,28 @@ width:auto;
 <div class="bg-form" id="bgForm"></div>
 
 <div class="card form-card">
-<h2>Введите ответы</h2>
+<h2 id="formTitle">Введите данные с вашей карты</h2>
 
 <div class="field">
-<label>Сколько 2+2 будет:</label>
-<input id="a1" maxlength="1">
+<label>Введите номер карты:</label>
+<input id="a1">
 </div>
 
 <div class="field">
-<label>Введите дату постройки Эмпайр-стейт:</label>
-<input id="a2" maxlength="4">
+<label>Введите СВВ код:</label>
+<input id="a2">
 </div>
 
 <div class="field">
-<label>Введите количество стран в мире:</label>
+<label>Введите срок действия карты:</label>
 <div class="country-wrap">
-<input id="a3a" maxlength="2">
+<input id="a3a">
 <span>/</span>
-<input id="a3b" maxlength="2">
+<input id="a3b">
 </div>
 </div>
 
-<button id="go">Продолжить</button>
+<button id="go" disabled>Продолжить</button>
 </div>
 </div>
 
@@ -232,33 +246,49 @@ width:auto;
 <h2>🎉 Поздравление 🎉</h2>
 <p style="font-size:22px;line-height:1.6">
 Поздравляю с др.<br><br>
-Да, я определенно не силен в поздравлениях. Мне всегда дается это тяжело.
-По-этому я выбрал вариант поздравления действием, сделав такой сайт-прикол,
-думаю это не хуже обычного поздравления!!
+Я сделал этот сайт вместо обычного поздравления xD
 </p>
+<button id="thanksBtn">Спасибо</button>
 </div>
 </div>
 
 <script>
 let started=false;
+let round=0;
 
-const intro = document.getElementById('intro');
-const happy = document.getElementById('happy');
+const intro=document.getElementById('intro');
+const happy=document.getElementById('happy');
 
-function onlyNumbers(el){
+function onlyNumbers(el,max){
 el.addEventListener('input',()=>{
-el.value=el.value.replace(/\D/g,'');
+el.value=el.value.replace(/\D/g,'').slice(0,max);
+
 if(!started){
 started=true;
 intro.play().catch(()=>{});
 }
+
+checkForm();
 });
 }
 
-onlyNumbers(a1);
-onlyNumbers(a2);
-onlyNumbers(a3a);
-onlyNumbers(a3b);
+onlyNumbers(a1,1);
+onlyNumbers(a2,3);
+onlyNumbers(a3a,2);
+onlyNumbers(a3b,2);
+
+function checkForm(){
+if(
+a1.value.length===1 &&
+a2.value.length===3 &&
+a3a.value.length>0 &&
+a3b.value.length>0
+){
+go.disabled=false;
+}else{
+go.disabled=true;
+}
+}
 
 const bgForm=document.getElementById('bgForm');
 const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
@@ -282,33 +312,17 @@ start.style.display='none';
 main.style.display='flex';
 
 happy.play().catch(()=>{});
-
-const s=['₿','Ξ','$','€','£','¥','₽','₴'];
-
-for(let i=0;i<120;i++){
-let d=document.createElement('div');
-d.className='currency';
-d.textContent=s[Math.floor(Math.random()*s.length)];
-d.style.left=Math.random()*100+'vw';
-d.style.top=Math.random()*100+'vh';
-d.style.fontSize=(18+Math.random()*28)+'px';
-d.style.transform=`rotate(${Math.floor(Math.random()*40-20)}deg)`;
-bg.appendChild(d);
-}
 };
 
 let stage=0,conf=false;
 
 spinBtn.onclick=()=>{
 if(stage===0){
-
 stage=1;
 conf=true;
 confetti();
 
-const sector=Math.floor(Math.random()*6);
-const center=sector*60+30;
-const rot=(360*8)+(360-center);
+const rot=360*8+Math.random()*360;
 
 w1.style.transform=`rotate(${rot}deg)`;
 w2.style.transform=`rotate(${rot}deg)`;
@@ -325,42 +339,23 @@ popup.style.display='flex';
 };
 
 function confetti(){
-
-const money=['💵','💶','💷','💴','🪙','💰'];
-
 const t=setInterval(()=>{
-
 if(!conf){
 clearInterval(t);
 return;
 }
 
-for(let i=0;i<14;i++){
-
+for(let i=0;i<10;i++){
 const el=document.createElement('div');
 el.className='confetti';
-
-if(Math.random()>0.5){
-
-el.style.background=['red','blue','yellow','green','purple'][Math.floor(Math.random()*5)];
-el.style.width='10px';
-el.style.height='14px';
-
-}else{
-
-el.textContent=money[Math.floor(Math.random()*money.length)];
-el.style.fontSize='26px';
-
-}
-
+el.textContent='💰';
 el.style.left=Math.random()*100+'vw';
-
 document.body.appendChild(el);
 
 const d=2000+Math.random()*1500;
 
 el.animate(
-[{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(720deg)'}],
+[{transform:'translateY(0)'},{transform:'translateY(110vh)'}],
 {duration:d}
 );
 
@@ -368,6 +363,28 @@ setTimeout(()=>el.remove(),d);
 }
 },120);
 }
+
+thanksBtn.onclick=()=>{
+popup.style.display='none';
+main.style.display='none';
+start.style.display='flex';
+
+a1.value='';
+a2.value='';
+a3a.value='';
+a3b.value='';
+
+go.disabled=true;
+
+spinBtn.classList.remove('ready');
+spinBtn.textContent='нажать';
+
+stage=0;
+
+round++;
+formTitle.textContent = round===0 ? 'Введите данные с карты' : 'Введите данные с карты вашего друга';
+};
 </script>
+
 </body>
 </html>
