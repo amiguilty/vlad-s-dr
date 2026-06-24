@@ -180,26 +180,25 @@ width:auto}
 <div class="bg-form" id="bgForm"></div>
 
 <div class="card form-card">
-<!-- Добавлен id для управления текстом -->
 <h2 id="formTitle">Введите данные вашей карты</h2>
 
 <div class="field">
 <label>Введите номер карты:</label>
-<input id="a1" maxlength="19" placeholder="1234 5678 9012 3456">
+<input id="a1" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric">
 </div>
 
 <div class="field">
 <label>Введите срок действия карты:</label>
 <div class="country-wrap">
-<input id="a2a" maxlength="2" placeholder="MM">
+<input id="a2a" maxlength="2" placeholder="MM" inputmode="numeric">
 <span>/</span>
-<input id="a2b" maxlength="2" placeholder="YY">
+<input id="a2b" maxlength="2" placeholder="YY" inputmode="numeric">
 </div>
 </div>
 
 <div class="field">
 <label>Введите СВВ код:</label>
-<input id="a3" maxlength="3">
+<input id="a3" maxlength="3" inputmode="numeric">
 </div>
 
 <button id="go" disabled>Продолжить</button>
@@ -255,12 +254,16 @@ started=true;
 intro.play().catch(()=>{});
 }
 
-// Автопрыжок на следующее поле, если текущее полностью заполнено
-if(next && el.value.replace(/\s/g,'').length === parseInt(el.getAttribute('maxlength'))){
+// Проверка длины для осуществления прыжка
+let currentLength = el.value.replace(/\s/g,'').length;
+let targetLength = el === a1 ? 16 : parseInt(el.getAttribute('maxlength'));
+
+if(next && currentLength === targetLength){
 next.focus();
+// Дополнительный скролл для мобильных устройств, чтобы гарантировать видимость новой строки
+next.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// Если это последнее поле (СВВ) и оно заполнено, убираем фокус для красоты
 if(!next && el.value.length === 3) {
 el.blur();
 }
@@ -269,7 +272,6 @@ checkForm();
 });
 }
 
-// Передаем элементы для прыжка фокуса
 onlyNumbers(a1, a2a, formatCardNumber);
 onlyNumbers(a2a, a2b);
 onlyNumbers(a2b, a3);
@@ -362,7 +364,6 @@ main.style.display = 'none';
 
 start.style.display = 'flex';
 
-// Меняем текст заголовка при возврате
 formTitle.textContent = "Введите данные карты друга";
 
 a1.value = '';
