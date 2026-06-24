@@ -7,33 +7,176 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Arial,sans-serif;background:#fff;overflow:hidden}
+
 .screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center}
-.card{background:#fff;padding:30px;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.15);width:min(92vw,520px);z-index:5}
+
+.card{
+background:#fff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+width:min(95vw,700px);
+z-index:5;
+}
+
 .card h2{text-align:center;margin-bottom:15px}
-input,button{width:100%;padding:14px;margin-top:10px;border-radius:12px;border:1px solid #ccc}
-button{cursor:pointer;font-weight:700}
-#main{display:none;flex-direction:column;gap:25px}
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.currency{position:absolute;color:#d4af37;opacity:.22;font-weight:900}
+
+input,button{
+padding:14px;
+border-radius:12px;
+border:1px solid #ccc;
+}
+
+button{
+width:100%;
+cursor:pointer;
+font-weight:700;
+margin-top:15px;
+}
+
+.form-card{position:relative;z-index:5}
+
+.field{
+display:flex;
+align-items:center;
+gap:12px;
+margin-top:12px;
+}
+
+.field label{
+width:250px;
+font-size:14px;
+font-weight:700;
+}
+
+.field input{
+flex:1;
+}
+
+.country-wrap{
+display:flex;
+align-items:center;
+gap:8px;
+width:100%;
+}
+
+.country-wrap input{
+width:70px;
+text-align:center;
+}
+
+.bg-form,.bg{
+position:fixed;
+inset:0;
+pointer-events:none;
+overflow:hidden;
+}
+
+.form-currency,
+.currency{
+position:absolute;
+color:#d4af37;
+font-weight:900;
+user-select:none;
+}
+
+.form-currency{
+opacity:.12;
+}
+
+.currency{
+opacity:.22;
+}
+
+#main{
+display:none;
+flex-direction:column;
+gap:25px;
+}
+
 .title{
 font-family:"Comic Sans MS",cursive;
 font-size:clamp(42px,8vw,92px);
 text-align:center;
 transform:rotate(-2deg);
 text-shadow:3px 3px 0 #ffd700;
+z-index:2;
 }
-.row{display:flex;align-items:center;justify-content:center;gap:25px;flex-wrap:wrap;z-index:2}
+
+.row{
+display:flex;
+align-items:center;
+justify-content:center;
+gap:70px;
+flex-wrap:wrap;
+z-index:2;
+}
+
 .wblock{text-align:center}
-.pointer{width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #222;margin:auto}
-.wheel{width:200px;height:200px;border-radius:50%;border:6px solid #222;
+
+.pointer{
+width:0;
+height:0;
+border-left:14px solid transparent;
+border-right:14px solid transparent;
+border-top:28px solid #222;
+margin:auto;
+}
+
+.wheel{
+width:200px;
+height:200px;
+border-radius:50%;
+border:6px solid #222;
 background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
-transition:transform 5s cubic-bezier(.17,.67,.15,1)}
-#spinBtn{width:320px;max-width:90vw;height:80px;background:#bdbdbd;border:none;font-size:26px;transition:.4s}
-.ready{background:linear-gradient(90deg,#d4af37,#ffd700)!important;transform:scale(1.15);animation:pulse 1s infinite}
-@keyframes pulse{50%{transform:scale(1.22)}}
-.popup{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;padding:20px;z-index:20}
-.confetti{position:fixed;top:-20px;width:10px;height:14px;z-index:15}
+transition:transform 5s cubic-bezier(.17,.67,.15,1)
+}
+
+#spinBtn{
+width:260px;
+max-width:90vw;
+height:80px;
+background:#bdbdbd;
+border:none;
+font-size:26px;
+transition:.4s;
+}
+
+.ready{
+background:linear-gradient(90deg,#d4af37,#ffd700)!important;
+transform:scale(1.15);
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+50%{transform:scale(1.22)}
+}
+
+.popup{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.5);
+display:none;
+justify-content:center;
+align-items:center;
+padding:20px;
+z-index:20;
+}
+
+.confetti{
+position:fixed;
+top:-20px;
+z-index:15;
+}
+
 @media(max-width:700px){
+.field{
+flex-direction:column;
+align-items:flex-start;
+}
+.field label{
+width:auto;
+}
 .wheel{width:150px;height:150px}
 #spinBtn{height:72px;font-size:22px}
 }
@@ -41,15 +184,34 @@ transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 </head>
 <body>
 
-<audio id="intro" src="gimn-ror.mp3"></audio>
-<audio id="happy" src="happy-birthday.mp3" loop></audio>
+<audio id="intro" src="evrei.mp3"></audio>
+<audio id="happy" src="happybirthday.mp3" loop></audio>
 
 <div id="start" class="screen">
-<div class="card">
+<div class="bg-form" id="bgForm"></div>
+
+<div class="card form-card">
 <h2>Введите ответы</h2>
-<input id="a1" placeholder="скольько 2+2 будет:">
-<input id="a2" placeholder="Введите дату постройки эмпай стейт:">
-<input id="a3" placeholder="введите количество стран в мире:">
+
+<div class="field">
+<label>Сколько 2+2 будет:</label>
+<input id="a1" maxlength="1">
+</div>
+
+<div class="field">
+<label>Введите дату постройки Эмпайр-стейт:</label>
+<input id="a2" maxlength="4">
+</div>
+
+<div class="field">
+<label>Введите количество стран в мире:</label>
+<div class="country-wrap">
+<input id="a3a" maxlength="2">
+<span>/</span>
+<input id="a3b" maxlength="2">
+</div>
+</div>
+
 <button id="go">Продолжить</button>
 </div>
 </div>
@@ -57,6 +219,7 @@ transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 <div id="main" class="screen">
 <div class="bg" id="bg"></div>
 <div class="title">🎉 С ДНЕМ РОЖДЕНИЯ 🎉</div>
+
 <div class="row">
 <div class="wblock"><div class="pointer"></div><div id="w1" class="wheel"></div></div>
 <button id="spinBtn">нажать</button>
@@ -78,27 +241,58 @@ transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
 <script>
 let started=false;
-const intro=intro=document.getElementById('intro');
-['a1','a2','a3'].forEach(id=>{
-document.getElementById(id).addEventListener('input',()=>{
-if(!started){started=true;intro.play().catch(()=>{});}
+
+const intro = document.getElementById('intro');
+const happy = document.getElementById('happy');
+
+function onlyNumbers(el){
+el.addEventListener('input',()=>{
+el.value=el.value.replace(/\D/g,'');
+if(!started){
+started=true;
+intro.play().catch(()=>{});
+}
 });
-});
+}
+
+onlyNumbers(a1);
+onlyNumbers(a2);
+onlyNumbers(a3a);
+onlyNumbers(a3b);
+
+const bgForm=document.getElementById('bgForm');
+const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
+
+for(let i=0;i<60;i++){
+const c=document.createElement('div');
+c.className='form-currency';
+c.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+c.style.left=Math.random()*100+'vw';
+c.style.top=Math.random()*100+'vh';
+c.style.fontSize=(24+Math.random()*50)+'px';
+c.style.transform=`rotate(${Math.random()*40-20}deg)`;
+bgForm.appendChild(c);
+}
 
 go.onclick=()=>{
-intro.pause();intro.currentTime=0;
+intro.pause();
+intro.currentTime=0;
+
 start.style.display='none';
 main.style.display='flex';
+
 happy.play().catch(()=>{});
 
 const s=['₿','Ξ','$','€','£','¥','₽','₴'];
-for(let i=0;i<100;i++){
+
+for(let i=0;i<120;i++){
 let d=document.createElement('div');
 d.className='currency';
 d.textContent=s[Math.floor(Math.random()*s.length)];
 d.style.left=Math.random()*100+'vw';
 d.style.top=Math.random()*100+'vh';
-d.style.fontSize=(14+Math.random()*24)+'px';
+d.style.fontSize=(18+Math.random()*28)+'px';
+d.style.transform=`rotate(${Math.floor(Math.random()*40-20)}deg)`;
 bg.appendChild(d);
 }
 };
@@ -107,10 +301,15 @@ let stage=0,conf=false;
 
 spinBtn.onclick=()=>{
 if(stage===0){
-stage=1;conf=true;confetti();
+
+stage=1;
+conf=true;
+confetti();
+
 const sector=Math.floor(Math.random()*6);
 const center=sector*60+30;
 const rot=(360*8)+(360-center);
+
 w1.style.transform=`rotate(${rot}deg)`;
 w2.style.transform=`rotate(${rot}deg)`;
 
@@ -119,23 +318,53 @@ conf=false;
 spinBtn.classList.add('ready');
 spinBtn.textContent='получить бесплатное поздравление';
 },5000);
+
 }else{
 popup.style.display='flex';
 }
 };
 
 function confetti(){
+
+const money=['💵','💶','💷','💴','🪙','💰'];
+
 const t=setInterval(()=>{
-if(!conf){clearInterval(t);return;}
-for(let i=0;i<12;i++){
-let c=document.createElement('div');
-c.className='confetti';
-c.style.left=Math.random()*100+'vw';
-c.style.background=['red','blue','yellow','green','purple'][Math.floor(Math.random()*5)];
-document.body.appendChild(c);
-let d=2000+Math.random()*1000;
-c.animate([{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(720deg)'}],{duration:d});
-setTimeout(()=>c.remove(),d);
+
+if(!conf){
+clearInterval(t);
+return;
+}
+
+for(let i=0;i<14;i++){
+
+const el=document.createElement('div');
+el.className='confetti';
+
+if(Math.random()>0.5){
+
+el.style.background=['red','blue','yellow','green','purple'][Math.floor(Math.random()*5)];
+el.style.width='10px';
+el.style.height='14px';
+
+}else{
+
+el.textContent=money[Math.floor(Math.random()*money.length)];
+el.style.fontSize='26px';
+
+}
+
+el.style.left=Math.random()*100+'vw';
+
+document.body.appendChild(el);
+
+const d=2000+Math.random()*1500;
+
+el.animate(
+[{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(720deg)'}],
+{duration:d}
+);
+
+setTimeout(()=>el.remove(),d);
 }
 },120);
 }
