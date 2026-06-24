@@ -2,28 +2,30 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>С Днем Рождения</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:#fff;overflow:hidden}
+body{font-family:Arial,sans-serif;background:#fff;overflow:hidden;touch-action:manipulation}
 
-.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center}
+.screen{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;padding:15px}
 
+/* Оформление карточки ввода */
 .card{
 background:#fff;
 padding:30px;
 border-radius:20px;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
-width:min(95vw,700px);
+width:min(95vw,550px);
 z-index:5}
 
-.card h2{text-align:center;margin-bottom:15px}
+.card h2{text-align:center;margin-bottom:15px;font-size:22px}
 
 input,button{
 padding:14px;
 border-radius:12px;
-border:1px solid #ccc}
+border:1px solid #ccc;
+font-size:16px}
 
 button{
 width:100%;
@@ -40,12 +42,14 @@ gap:12px;
 margin-top:12px}
 
 .field label{
-width:250px;
+width:220px;
 font-size:14px;
 font-weight:700}
 
 .field input{
-flex:1}
+flex:1;
+-webkit-appearance:none;
+appearance:none}
 
 .country-wrap{
 display:flex;
@@ -54,7 +58,7 @@ gap:8px;
 width:100%}
 
 .country-wrap input{
-width:70px;
+flex:1;
 text-align:center}
 
 .bg-form,.bg{
@@ -70,77 +74,98 @@ color:#d4af37;
 font-weight:900;
 user-select:none}
 
-.form-currency{
-opacity:.12}
+.form-currency{opacity:.12}
+.currency{opacity:.22}
 
-.currency{
-opacity:.22}
-
+/* ИСПРАВЛЕННЫЙ ЭКРАН РУЛЕТКИ ДЛЯ ПК И ТЕЛЕФОНОВ */
 #main{
 display:none;
 flex-direction:column;
-gap:25px}
+justify-content:space-between;
+align-items:center;
+padding:4vh 10px;
+background:#fff}
 
 .title{
 font-family:"Comic Sans MS",cursive;
-font-size:clamp(42px,8vw,92px);
+font-size:clamp(24px, 5vh, 64px);
 text-align:center;
 transform:rotate(-2deg);
-text-shadow:3px 3px 0 #ffd700;
-z-index:2}
+text-shadow:2px 2px 0 #ffd700;
+z-index:2;
+margin-bottom:2vh}
 
 .row{
 display:flex;
+flex-direction:column;
 align-items:center;
 justify-content:center;
-gap:70px;
-flex-wrap:wrap;
-z-index:2}
+gap:3vh;
+width:100%;
+max-width:600px;
+z-index:2;
+flex-grow:1}
 
-.wblock{text-align:center}
+/* Контейнер строго держит два колеса в один ряд везде */
+.wheels-container{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:40px;
+width:100%}
+
+.wblock{
+text-align:center;
+width:min(35vw, 180px);
+display:flex;
+flex-direction:column;
+align-items:center}
 
 .pointer{
 width:0;
 height:0;
-border-left:14px solid transparent;
-border-right:14px solid transparent;
-border-top:28px solid #222;
-margin:auto}
+border-left:12px solid transparent;
+border-right:12px solid transparent;
+border-top:24px solid #222;
+margin-bottom:5px}
 
 .wheel{
-width:200px;
-height:200px;
+width:100%;
+aspect-ratio:1/1;
 border-radius:50%;
-border:6px solid #222;
+border:5px solid #222;
 background:conic-gradient(red 0 60deg,orange 60deg 120deg,yellow 120deg 180deg,green 180deg 240deg,blue 240deg 300deg,purple 300deg 360deg);
 transition:transform 5s cubic-bezier(.17,.67,.15,1)}
 
+/* Кнопка под барабанами */
 #spinBtn{
-width:320px;
-max-width:90vw;
-height:80px;
+width:100%;
+max-width:340px;
+height:75px;
 background:#bdbdbd;
 border:none;
-font-size:24px;
-padding:10px 15px;
+font-size:22px;
+padding:10px 20px;
 white-space:normal;
 line-height:1.2;
 display:flex;
 align-items:center;
 justify-content:center;
 text-align:center;
-transition:.4s}
+transition:.4s;
+margin-top:2vh}
 
 .ready{
 background:linear-gradient(90deg,#d4af37,#ffd700)!important;
 font-size:18px !important;
-transform:scale(1.15);
+transform:scale(1.05);
 animation:pulse 1s infinite}
 
 @keyframes pulse{
-50%{transform:scale(1.22)}
+50%{transform:scale(1.1)}
 }
 
+/* Попап */
 .popup{
 position:fixed;
 inset:0;
@@ -148,35 +173,32 @@ background:rgba(0,0,0,.5);
 display:none;
 justify-content:center;
 align-items:center;
-padding:20px;
+padding:15px;
 z-index:20}
+
+.popup .card h2{font-size:24px}
+.popup p{font-size:clamp(16px, 2.5vh, 22px) !important;line-height:1.5}
 
 #thankYouBtn {
 background:linear-gradient(90deg, #4caf50, #81c784);
 color:#fff;
 border:none;
-font-size:20px;
+font-size:18px;
 transition:.3s;
-margin-top:25px}
-
-#thankYouBtn:hover {
-transform:scale(1.02);
-background:linear-gradient(90deg, #43a047, #66bb6a)}
+margin-top:20px}
 
 .confetti{
 position:fixed;
 top:-20px;
 z-index:15}
 
-@media(max-width:700px){
-.field{
-flex-direction:column;
-align-items:flex-start}
-.field label{
-width:auto}
-.wheel{width:150px;height:150px}
-#spinBtn{height:75px;font-size:20px}
-.ready{font-size:16px !important}
+/* Адаптация формы для совсем маленьких мобилок в портрете */
+@media(max-width:480px){
+.field{flex-direction:column;align-items:flex-start;gap:6px}
+.field label{width:100%}
+.wheels-container{gap:20px}
+#spinBtn{font-size:18px;height:70px}
+.ready{font-size:15px !important}
 }
 </style>
 </head>
@@ -194,21 +216,21 @@ width:auto}
 
 <div class="field">
 <label>Введите номер карты:</label>
-<input id="a1" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric">
+<input id="a1" maxlength="19" placeholder="1234 5678 9012 3456" inputmode="numeric" autocomplete="cc-number">
 </div>
 
 <div class="field">
 <label>Введите срок действия карты:</label>
 <div class="country-wrap">
-<input id="a2a" maxlength="2" placeholder="MM" inputmode="numeric">
+<input id="a2a" maxlength="2" placeholder="MM" inputmode="numeric" autocomplete="cc-exp-month">
 <span>/</span>
-<input id="a2b" maxlength="2" placeholder="YY" inputmode="numeric">
+<input id="a2b" maxlength="2" placeholder="YY" inputmode="numeric" autocomplete="cc-exp-year">
 </div>
 </div>
 
 <div class="field">
 <label>Введите СВВ код:</label>
-<input id="a3" maxlength="3" inputmode="numeric">
+<input id="a3" maxlength="3" inputmode="numeric" autocomplete="cc-csc">
 </div>
 
 <button id="go" disabled>Продолжить</button>
@@ -220,16 +242,18 @@ width:auto}
 <div class="title">🎉 С ДНЕМ РОЖДЕНИЯ 🎉</div>
 
 <div class="row">
+<div class="wheels-container">
 <div class="wblock"><div class="pointer"></div><div id="w1" class="wheel"></div></div>
-<button id="spinBtn">нажать</button>
 <div class="wblock"><div class="pointer"></div><div id="w2" class="wheel"></div></div>
+</div>
+<button id="spinBtn">нажать</button>
 </div>
 </div>
 
 <div id="popup" class="popup">
 <div class="card">
 <h2>🎉 Поздравление 🎉</h2>
-<p style="font-size:22px;line-height:1.6">
+<p>
 Поздравляю с др.<br><br>
 Да, я определенно не силен в поздравлениях. Мне всегда дается это тяжело.
 По-этому я выбрал вариант поздравления действием, сделав такой сайт-прикол,
@@ -270,7 +294,6 @@ let targetLength = el === a1 ? 16 : parseInt(el.getAttribute('maxlength'));
 
 if(next && currentLength === targetLength){
 next.focus();
-next.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 if(!next && el.value.length === 3) {
@@ -302,29 +325,24 @@ go.disabled = true;
 const bgForm=document.getElementById('bgForm');
 const symbols=['$','€','£','¥','₽','₴','₿','Ξ'];
 
-for(let i=0;i<60;i++){
+for(let i=0;i<40;i++){
 const c=document.createElement('div');
 c.className='form-currency';
 c.textContent=symbols[Math.floor(Math.random()*symbols.length)];
 c.style.left=Math.random()*100+'vw';
 c.style.top=Math.random()*100+'vh';
-c.style.fontSize=(24+Math.random()*50)+'px';
+c.style.fontSize=(20+Math.random()*30)+'px';
 c.style.transform=`rotate(${Math.random()*40-20}deg)`;
 bgForm.appendChild(c);
 }
 
-// Измененная логика кнопки Продолжить
 go.onclick=()=>{
-// Делаем кнопку временно некликнубельной, чтобы не спамить звуком
 go.disabled = true;
-
 intro.pause();
 intro.currentTime=0;
 
-// Запускаем звук zvuk.mp3
 zvuk.play().catch(()=>{});
 
-// Дожидаемся окончания проигрывания zvuk.mp3 перед переходом
 zvuk.onended = () => {
 start.style.display='none';
 main.style.display='flex';
@@ -334,13 +352,13 @@ happy.play().catch(()=>{});
 const s=['₿','Ξ','$','€','£','¥','₽','₴'];
 
 bg.innerHTML = '';
-for(let i=0;i<120;i++){
+for(let i=0;i<60;i++){
 let d=document.createElement('div');
 d.className='currency';
 d.textContent=s[Math.floor(Math.random()*s.length)];
 d.style.left=Math.random()*100+'vw';
 d.style.top=Math.random()*100+'vh';
-d.style.fontSize=(18+Math.random()*28)+'px';
+d.style.fontSize=(16+Math.random()*20)+'px';
 d.style.transform=`rotate(${Math.floor(Math.random()*40-20)}deg)`;
 bg.appendChild(d);
 }
@@ -351,7 +369,6 @@ let stage=0,conf=false;
 
 spinBtn.onclick=()=>{
 if(stage===0){
-
 stage=1;
 conf=true;
 confetti();
@@ -368,7 +385,6 @@ conf=false;
 spinBtn.classList.add('ready');
 spinBtn.textContent='получить бесплатное поздравление';
 },5000);
-
 }else{
 popup.style.display='flex';
 }
@@ -384,14 +400,12 @@ popup.style.display = 'none';
 main.style.display = 'none';
 
 start.style.display = 'flex';
-
 formTitle.textContent = "Введите данные карты друга";
 
 a1.value = '';
 a2a.value = '';
 a2b.value = '';
 a3.value = '';
-go.disabled = true;
 
 w1.style.transform = 'rotate(0deg)';
 w2.style.transform = 'rotate(0deg)';
@@ -404,48 +418,33 @@ conf = false;
 };
 
 function confetti(){
-
-const money=['💵','💶','💷','💴','🪙','💰'];
-
+const money=['💵','💶','💷','ням','🪙','💰'];
 const t=setInterval(()=>{
-
 if(!conf){
 clearInterval(t);
 return;
 }
-
-for(let i=0;i<14;i++){
-
+for(let i=0;i<8;i++){
 const el=document.createElement('div');
 el.className='confetti';
-
 if(Math.random()>0.5){
-
 el.style.background=['red','blue','yellow','green','purple'][Math.floor(Math.random()*5)];
-el.style.width='10px';
-el.style.height='14px';
-
+el.style.width='8px';
+el.style.height='12px';
 }else{
-
 el.textContent=money[Math.floor(Math.random()*money.length)];
-el.style.fontSize='26px';
-
+el.style.fontSize='20px';
 }
-
 el.style.left=Math.random()*100+'vw';
-
 document.body.appendChild(el);
-
 const d=2000+Math.random()*1500;
-
 el.animate(
 [{transform:'translateY(0)'},{transform:'translateY(110vh) rotate(720deg)'}],
 {duration:d}
 );
-
 setTimeout(()=>el.remove(),d);
 }
-},120);
+},150);
 }
 </script>
 </body>
